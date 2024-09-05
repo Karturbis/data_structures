@@ -1,0 +1,16 @@
+Aufgabe 4)
+    Preorder Traversierung:
+    5, 3, 9, 6, 7, 11, 10
+    Inorder Traversierung:
+    3, 5, 7, 6, 9, 11, 10
+    Postorder traversierung:
+    3, 7, 6, 10, 11, 9, 5
+
+Aufgabe 5)
+            1
+           / \
+          2   3
+         /   / \
+        4   5   7
+            /
+           6

@@ -37,6 +37,18 @@ class MorseTree():
     def str_to_sub_obj(self, obj, character):
         return obj.dash if character == "-" else obj.dot
 
+    def _inorder_traversal(self, node, output):
+        if node.dot:
+            self._inorder_traversal(node.dot, output)
+        elif node.dash:
+            self._inorder_traversal(node.dash, output)
+        else:
+            output = f"{output}{node.value}"
+
+    def inorder_traversal_wrapper(self):
+        self._inorder_traversal(self.root, "The tree contains: ")
+
+
     def user_input_morse_decoder(self):
         user_input: str = input("Put in the morse code as . and - : ")
         morse_letters: [] = user_input.split(" ")

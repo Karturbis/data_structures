@@ -16,7 +16,7 @@ class DuplicateKeyException(Exception):
     exists."""
 
 
-class Binary_Node:
+class BinaryNode:
     def __init__(self, key: str, parent_key: str, value=None):
         self.key = key
         self.parent_key = parent_key
@@ -25,7 +25,7 @@ class Binary_Node:
         self.right = None
 
 
-class Binary_Search_Tree:
+class BinarySearchTree:
 
     def __init__(self):
         self.__root = None
@@ -40,24 +40,26 @@ class Binary_Search_Tree:
         # else:
         raise NodeNotFoundException
 
-    def get_node(self, key: str) -> Binary_Node:
+    def get_node(self, key: str, start_node=None) -> BinaryNode:
         """Returns the node with the given key,
         if no node with given key exists, it
         returns the last existent node on the path
         and raises a Node not found Exception."""
-        if self.__root:
-            if key == self.__root.key:
-                node = self.__root
+        if not start_node:
+            start_node = self.__root
+        if start_node:
+            if key == start_node.key:
+                node = start_node
             else:
                 try:
-                    node = self.__get_node_inner(key, self.__root)
+                    node = self.__get_node_inner(key, start_node)
                 except NodeNotFoundException:
                     return self.__get_node_backpass_variable, False
             return node, True
         # else:
         raise EmptyTreeException
 
-    def __get_node_inner(self, key: str, position) -> Binary_Node:
+    def __get_node_inner(self, key: str, position) -> BinaryNode:
         if key < position.key:
             if position.left:
                 if key == position.left.key:
@@ -85,13 +87,15 @@ class Binary_Search_Tree:
             # else:
             node = node[0]
             if key < node.key:
-                node.left = Binary_Node(key, node.key, value)
+                node.left = BinaryNode(key, node.key, value)
             else:
-                node.right = Binary_Node(key, node.key, value)
+                node.right = BinaryNode(key, node.key, value)
         else:
-            self.__root = Binary_Node(key, None, value)
+            self.__root = BinaryNode(key, None, value)
 
-    def get_minimum_node(self, start_key=self.__root) -> Binary_Node:
+    def get_minimum_node(self, start_key=None) -> BinaryNode:
+        if not start_key:
+            start_key = self.__root
         running_node = start_key
         while True:
             if running_node.left:
@@ -99,32 +103,41 @@ class Binary_Search_Tree:
             else:
                 return running_node
 
-    def delete_node(self, key: str) -> None:
-        node = self.get_node(key)
+    def delete_node(self, key: str, start_node=None) -> None:
+        node = self.get_node(key, start_node)
         if node[1]:
+
             node = node[0]
             if node.key == self.__root.key:
-                self.__root = None
-            elif not (node.left or node.right):
-                if node.parent.left.key == node.key:
-                    node.parent.left = None
-                else:
-                    node.parent.right = None
+                raise NotImplementedError
+            else:
+                parent = self.get_node(node.parent_key)[0]
+            if node.key < parent.key:
+                parent.left = None
+            else:
+                parent.right = None
+            if not(node.left and node.right):
+                node = None
             elif node.left and not node.right:
                 node = node.left
             elif not node.left and node.right:
                 node = node.right
             else:
-                node = 
-                
-
+                node = self.get_minimum_node(node)
+                self.delete_node(node.key, node.left)
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
 
 if __name__ == "__main__":
-    search_tree = Binary_Search_Tree()
-    search_tree.add_node("caspian", 18)
-    search_tree.add_node("domo", 17)
-    print(search_tree.get_value("caspian"))
-    print(search_tree.get_value("domo"))
+    search_tree = BinarySearchTree()
+    names = ["caspian", "domo", "lukas", "ziana", "merle", "alexa", "michel"]
+
+    for name in names:
+        search_tree.add_node(name, len(name))
+    
+    search_tree.delete_node("domo")
+
+    for name in names:
+        print(search_tree.get_value(name))
+

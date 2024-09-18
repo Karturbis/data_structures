@@ -38,7 +38,7 @@ class BinarySearchTree:
         if node[1]:
             return node[0].value
         # else:
-        raise NodeNotFoundException
+        return "The node was not found!"
 
     def get_node(self, key: str, start_node=None) -> BinaryNode:
         """Returns the node with the given key,
@@ -106,38 +106,55 @@ class BinarySearchTree:
     def delete_node(self, key: str, start_node=None) -> None:
         node = self.get_node(key, start_node)
         if node[1]:
-
             node = node[0]
             if node.key == self.__root.key:
                 raise NotImplementedError
             else:
                 parent = self.get_node(node.parent_key)[0]
             if node.key < parent.key:
-                parent.left = None
-            else:
-                parent.right = None
-            if not(node.left and node.right):
-                node = None
-            elif node.left and not node.right:
-                node = node.left
-            elif not node.left and node.right:
-                node = node.right
-            else:
-                node = self.get_minimum_node(node)
-                self.delete_node(node.key, node.left)
+                if not (node.left or node.right):
+                    parent.left = None
+                elif node.left and not node.right:
+                    parent.left = node.left
+                elif not node.left and node.right:
+                    parent.left = node.right
+                else:
+                    parent.left = self.get_minimum_node(node)
+                    self.delete_node(parent.left.key, parent.right.left)
+            if node.key > parent.key:
+                if not (node.left or node.right):
+                    parent.right = None
+                elif node.left and not node.right:
+                    parent.right = node.left
+                elif not node.left and node.right:
+                    parent.right = node.right
+                else:
+                    x = self.get_minimum_node(node)
+                    parent.right = x
+                    parent.right.parent_key = parent.key
+                    self.delete_node(parent.right.key, parent.right.left)
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
 
 if __name__ == "__main__":
     search_tree = BinarySearchTree()
-    names = ["caspian", "domo", "lukas", "ziana", "merle", "alexa", "michel"]
+    names = [
+        "krypto30",
+        "aqua41",
+        "martian55",
+        "cat40",
+        "lantern90",
+        "thebat39",
+        "flash44",
+        "rex40",
+        "wonder11",
+    ]
 
     for name in names:
         search_tree.add_node(name, len(name))
-    
-    search_tree.delete_node("domo")
+
+    search_tree.delete_node("martian55")
 
     for name in names:
         print(search_tree.get_value(name))
-

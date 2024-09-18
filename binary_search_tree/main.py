@@ -19,8 +19,6 @@ class Binary_Search_Tree:
 
     def __init__(self, root_key, root_val=None):
         self.root = Binary_Node(root_key, root_val)
-        self.root.left = Binary_Node("Caspian", "18")
-        self.root.left.left = Binary_Node("Ahlfeld", "80")
 
     def insert_node(self, key, value):
         if key:
@@ -30,41 +28,83 @@ class Binary_Search_Tree:
 
     def _insert_node_inner(self, key, value, position):
         if position:
-            if key == position.key:
-                raise DuplicateKeyError
-            elif key < position.key:
-                self._insert_node_inner(key, value, position.left)
-            elif key > position.key:
-                self._insert_node_inner(key, value, position.right)
+            if key < position.key:
+                if position.left:
+                    if position.left.key == key:
+                        raise DuplicateKeyError
+                    self._insert_node_inner(key, value, position.left)
+                else:
+                    position.left = Binary_Node(key, value)
+            else:
+                if position.right:
+                    if position.right.key == key:
+                        raise DuplicateKeyError
+                    self._insert_node_inner(key, value, position.right)
+                else:
+                    position.right = Binary_Node(key, value)
         else:
             position = Binary_Node(key, value)
 
     def delete_node(self, key):
-        pass
+        if key:
+            self._delete_node_inner(key, self.root)
+        else:
+            raise ValueError
 
-    def get_value(self, key: str, position = None):
+    def _delete_node_inner(self, key, position):
+        if position:
+            if key < position.key:
+                if position.left:
+                    if position.left.key == key:
+                        raise DuplicateKeyError
+                    self._delete_node_inner(key, position.left)
+                else:
+                    position.left = Binary_Node(key)
+            else:
+                if position.right:
+                    if position.right.key == key:
+                        raise DuplicateKeyError
+                    self._delete_node_inner(key, position.right)
+                else:
+                    position.right = Binary_Node(key)
+        else:
+            position = Binary_Node(key)
+
+    def get_value(self, key: str, position=None):
+        return self.get_node(key, position).value
+
+    def get_node(self, key: str, position=None):
         if not position:
             position = self.root
         if key:
-            value = self._get_value_inner(str(key), position)
-            if value:
-                return value
+            node = self._get_node_inner(str(key), position)
+            if node:
+                return node
             print("Key not found")
         else:
             raise ValueError
 
-    def _get_value_inner(self, search_key: str, position: Binary_Node):
+    def _get_node_inner(self, search_key: str, position: Binary_Node):
         if not position:
             raise KeyNotFoundError
         elif search_key == position.key:
             return position
         elif search_key < position.key:
-            self._get_value_inner(search_key, position.left)
+            return self._get_node_inner(search_key, position.left)
         elif search_key > position.key:
-            self._get_value_inner(search_key, position.right)
-        
+            return self._get_node_inner(search_key, position.right)
 
 
 if __name__ == "__main__":
     bin_tree = Binary_Search_Tree("root")
-    print(bin_tree.get_value("Ahlfeld"))
+    while True:
+        user_input = input("Commands:\nadd node: an\nget value: gv\n>> ").lower()
+        if user_input == "an":
+            key = input("Please enter the key:\n>> ")
+            value = input("Please enter the value:\n>> ")
+            bin_tree.insert_node(key, value)
+            print("Node has been inserted successfully.\n")
+        elif user_input == "gv":
+            key = input("Please enter the key:\n>> ")
+            print(f"The value of the key '{key}' is '{bin_tree.get_value(key)}'.")
+        

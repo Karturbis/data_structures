@@ -91,6 +91,14 @@ class Binary_Search_Tree:
         else:
             self.__root = Binary_Node(key, None, value)
 
+    def get_minimum_node(self, start_key=self.__root) -> Binary_Node:
+        running_node = start_key
+        while True:
+            if running_node.left:
+                running_node = running_node.left
+            else:
+                return running_node
+
     def delete_node(self, key: str) -> None:
         node = self.get_node(key)
         if node[1]:
@@ -106,6 +114,9 @@ class Binary_Search_Tree:
                 node = node.left
             elif not node.left and node.right:
                 node = node.right
+            else:
+                node = 
+                
 
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")

@@ -8,7 +8,8 @@ class KeyNotFoundError(Exception):
 
 
 class Binary_Node:
-    def __init__(self, key: str, value=None):
+    def __init__(self, key: str, parent, value=None):
+        self.parent = parent
         self.key = key
         self.value = value
         self.left = None
@@ -18,7 +19,7 @@ class Binary_Node:
 class Binary_Search_Tree:
 
     def __init__(self, root_key, root_val=None):
-        self.root = Binary_Node(root_key, root_val)
+        self.root = Binary_Node(root_key, None, root_val)
 
     def insert_node(self, key, value):
         if key:
@@ -45,30 +46,20 @@ class Binary_Search_Tree:
         else:
             position = Binary_Node(key, value)
 
-    def delete_node(self, key):
+    def delete_node(self, key:str):
         if key:
-            self._delete_node_inner(key, self.root)
+            self._delete_node_inner(str(key), self.root)
         else:
             raise ValueError
 
     def _delete_node_inner(self, key, position):
-        if position:
-            if key < position.key:
-                if position.left:
-                    if position.left.key == key:
-                        raise DuplicateKeyError
-                    self._delete_node_inner(key, position.left)
-                else:
-                    position.left = Binary_Node(key)
-            else:
-                if position.right:
-                    if position.right.key == key:
-                        raise DuplicateKeyError
-                    self._delete_node_inner(key, position.right)
-                else:
-                    position.right = Binary_Node(key)
+        if key < position.key:
+            self._delete_node_inner(key, position.left)
         else:
-            position = Binary_Node(key)
+            if position.left:
+                if position.right:
+                    # IMPLEMENT mininhalt
+                else:
 
     def get_value(self, key: str, position=None):
         return self.get_node(key, position).value

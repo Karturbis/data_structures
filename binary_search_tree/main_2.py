@@ -10,6 +10,12 @@ class NodeNotFoundException(Exception):
     could not be found."""
 
 
+class DuplicateKeyException(Exception):
+    """Raised, when someone is trying to
+    add a node with a key, that already
+    exists."""
+
+
 class Binary_Node:
     def __init__(self, key: str, parent_key: str, value=None):
         self.key = key
@@ -27,7 +33,11 @@ class Binary_Search_Tree:
     def get_value(self, key: str):
         """Returns the value of the node with
         the given key."""
-        return self.get_node(key).value
+        node = self.get_node(key)
+        if node[1]:
+            return node.value
+        # else:
+        raise NodeNotFoundException
 
     def get_node(self, key: str) -> Binary_Node:
         """Returns the node with the given key,
@@ -38,8 +48,11 @@ class Binary_Search_Tree:
             if key == self.root.key:
                 node = self.root
             else:
-                node = self.__get_node_inner(key, self.root)
-            return node
+                try:
+                    node = self.__get_node_inner(key, self.root)
+                except NodeNotFoundException as parent:
+                    return parent, False
+            return node, True
         # else:
         raise EmptyTreeException
 
@@ -61,11 +74,17 @@ class Binary_Search_Tree:
         # else:
         raise NodeNotFoundException(position)
 
-
-
     def add_node(self, key: str, value=None) -> None:
         if self.root:
-            pass
+            node = self.get_node(key)
+            if node[1]:
+                raise DuplicateKeyException
+            # else:
+            node = node[0]
+            if key < node.key:
+                node.left = Binary_Node(key, node.key, value)
+            else:
+                node.right = Binary_Node(key, node.key, value)
         else:
             self.root = Binary_Node(key, None, value)
 

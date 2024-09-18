@@ -92,7 +92,24 @@ class Binary_Search_Tree:
             self.__root = Binary_Node(key, None, value)
 
     def delete_node(self, key: str) -> None:
-        pass
+        node = self.get_node(key)
+        if node[1]:
+            node = node[0]
+            if node.key == self.__root.key:
+                self.__root = None
+            elif not (node.left or node.right):
+                if node.parent.left.key == node.key:
+                    node.parent.left = None
+                else:
+                    node.parent.right = None
+            elif node.left and not node.right:
+                node = node.left
+            elif not node.left and node.right:
+                node = node.right
+
+        else:
+            raise NodeNotFoundException("Node could not be removed from tree.")
+
 
 if __name__ == "__main__":
     search_tree = Binary_Search_Tree()

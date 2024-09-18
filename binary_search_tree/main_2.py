@@ -28,14 +28,15 @@ class Binary_Node:
 class Binary_Search_Tree:
 
     def __init__(self):
-        self.root = None
+        self.__root = None
+        self.__get_node_backpass_variable = None
 
     def get_value(self, key: str):
         """Returns the value of the node with
         the given key."""
         node = self.get_node(key)
         if node[1]:
-            return node.value
+            return node[0].value
         # else:
         raise NodeNotFoundException
 
@@ -44,14 +45,14 @@ class Binary_Search_Tree:
         if no node with given key exists, it
         returns the last existent node on the path
         and raises a Node not found Exception."""
-        if self.root:
-            if key == self.root.key:
-                node = self.root
+        if self.__root:
+            if key == self.__root.key:
+                node = self.__root
             else:
                 try:
-                    node = self.__get_node_inner(key, self.root)
-                except NodeNotFoundException as parent:
-                    return parent, False
+                    node = self.__get_node_inner(key, self.__root)
+                except NodeNotFoundException:
+                    return self.__get_node_backpass_variable, False
             return node, True
         # else:
         raise EmptyTreeException
@@ -64,7 +65,8 @@ class Binary_Search_Tree:
                 # else:
                 return self.__get_node_inner(key, position.left)
             # else:
-            raise NodeNotFoundException(position)
+            self.__get_node_backpass_variable = position
+            raise NodeNotFoundException()
         # else:
         if position.right:
             if key == position.right.key:
@@ -72,10 +74,11 @@ class Binary_Search_Tree:
             # else:
             return self.__get_node_inner(key, position.right)
         # else:
+        self.__get_node_backpass_variable = position
         raise NodeNotFoundException(position)
 
     def add_node(self, key: str, value=None) -> None:
-        if self.root:
+        if self.__root:
             node = self.get_node(key)
             if node[1]:
                 raise DuplicateKeyException
@@ -86,7 +89,14 @@ class Binary_Search_Tree:
             else:
                 node.right = Binary_Node(key, node.key, value)
         else:
-            self.root = Binary_Node(key, None, value)
+            self.__root = Binary_Node(key, None, value)
 
     def delete_node(self, key: str) -> None:
         pass
+
+if __name__ == "__main__":
+    search_tree = Binary_Search_Tree()
+    search_tree.add_node("caspian", 18)
+    search_tree.add_node("domo", 17)
+    print(search_tree.get_value("caspian"))
+    print(search_tree.get_value("domo"))

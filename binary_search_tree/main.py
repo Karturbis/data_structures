@@ -59,7 +59,9 @@ class Binary_Search_Tree:
             if position.left:
                 if position.right:
                     # IMPLEMENT mininhalt
+                    pass
                 else:
+                    pass
 
     def get_value(self, key: str, position=None):
         return self.get_node(key, position).value

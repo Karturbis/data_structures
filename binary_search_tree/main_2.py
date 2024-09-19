@@ -224,13 +224,11 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
             elif len(commands_input) > 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        func = getattr(bin_tree, func_iter)
-                        func(commands_input[1:])
+                        func_iter(commands_input[1:])
             elif len(commands_input) == 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        func = getattr(bin_tree, func_iter)
-                        func()
+                        func_iter()
 
 
 def main():

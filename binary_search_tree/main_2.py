@@ -110,7 +110,7 @@ class BinarySearchTree:
             else:
                 return running_node
 
-    def set_val(self, obj0, subobj0: str, value, subsubobj0: str=None):
+    def set_val(self, obj0, subobj0: str, value, subsubobj0: str = None):
         if subobj0 == "left" and obj0.left:
             if subsubobj0 == "parent_key":
                 obj0.left.parent_key = value
@@ -131,66 +131,112 @@ class BinarySearchTree:
     def delete_node(self, key: str, start_node=None) -> None:
         node = self.get_node(key, start_node)
         if node[1]:  # If the Node is in the Tree
-            node = node[0]  # set node to the Node object, which is in [0] of the node tuple
-            if node.key == self.__root.key:
-                self.__root = node
-                self.__root.parent_key = None
+            node = node[
+                0
+            ]  # set node to the Node object, which is in [0] of the node tuple
+            if self.__root:
+                has_parent = False
+                pathway = None
             else:
+                has_parent = True
                 old_parent = self.get_node(node.parent_key)[0]
                 if node.key < old_parent.key:
                     pathway = "left"
                 elif node.key > old_parent.key:
                     pathway = "right"
-                if not (node.left or node.right):
+            if not (node.left or node.right):
+                if has_parent:
                     self.set_val(old_parent, pathway, None)
-                elif node.left and not node.right:
+                else:
+                    self.__root = None
+            elif node.left and not node.right:
+                if has_parent:
                     self.set_val(old_parent, pathway, node.left)
                     self.set_val(old_parent, pathway, old_parent.key, "parent_key")
-                elif not node.left and node.right:
+                else:
+                    self.__root = node.left
+            elif not node.left and node.right:
+                if has_parent:
                     self.set_val(old_parent, pathway, node.right)
                     self.set_val(old_parent, pathway, old_parent.key, "parent_key")
-                else:  # not node.left and not node.right
+                else:
+                    self.__root = node.right
+            else:  # not node.left and not node.right
+                if has_parent:
                     self.set_val(old_parent, pathway, self.get_minimum_node(node.right))
-                    if pathway == "left":
-                        old_parent_of_minimum = self.get_node(old_parent.left.parent_key)
-                    else:
-                        old_parent_of_minimum = self.get_node(old_parent.right.parent_key)
-                    old_parent_of_minimum[0].left = None
+                else:
+                    self.__root = self.get_minimum_node(node.right)
+                if not pathway:
+                    old_parent_of_minimum = self.get_node(self.__root.parent_key)
+                elif pathway == "left":
+                    old_parent_of_minimum = self.get_node(old_parent.left.parent_key)
+                elif pathway == "right":
+                    old_parent_of_minimum = self.get_node(old_parent.right.parent_key)
+                old_parent_of_minimum[0].left = None
+                if has_parent:
                     self.set_val(old_parent, pathway, old_parent.key, "parent_key")
                     self.set_val(old_parent, pathway, node.left, "left")
-                    old_min_right_subtree = None
-                    if pathway == "left":
-                        if old_parent.left.right:
-                            old_min_right_subtree = old_parent.left.right
-                        old_parent.left.right = node.right
-                    else:
-                        if old_parent.right.right:
-                            old_min_right_subtree = old_parent.right.right
-                        old_parent.right.right = node.right
-                    if old_min_right_subtree:
-                        self.__add_subtree(old_min_right_subtree.right)
+                else:
+                    self.__root.left = node.left
+                old_min_right_subtree = None
+                if not pathway:
+                    if self.__root.right:
+                        old_min_right_subtree = self.__root.right
+                    self.__root.right = node.right
+                elif pathway == "left":
+                    if old_parent.left.right:
+                        old_min_right_subtree = old_parent.left.right
+                    old_parent.left.right = node.right
+                elif pathway == "right":
+                    if old_parent.right.right:
+                        old_min_right_subtree = old_parent.right.right
+                    old_parent.right.right = node.right
+                if old_min_right_subtree:
+                    self.__add_subtree(old_min_right_subtree.right)
+            self.__root.parent_key = None
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
+class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
+
+    def __init__(self, bin_tree):
+        self.commands = {
+            "add": bin_tree.add_node,
+            "delete": bin_tree.delete_node,
+            "find": bin_tree.get_value,
+            "help": self.help
+        }
+
+    def help(self):
+        for key, value in self.commands.items():
+            print(f"{key}: {value}")
+
+
+    def input_loop(self, bin_tree):
+        while True:
+            commands_input = input("> ").lower().split(" ")
+            if commands_input == [""]:
+                continue
+            elif commands_input[0] == "?":
+                self.help()
+            elif commands_input[0] == "q":
+                break
+            elif len(commands_input) > 1:
+                for key, func_iter in self.commands.items():
+                    if key.startswith(commands_input[0]):
+                        func = getattr(bin_tree, func_iter)
+                        func(commands_input[1:])
+            elif len(commands_input) == 1:
+                for key, func_iter in self.commands.items():
+                    if key.startswith(commands_input[0]):
+                        func = getattr(bin_tree, func_iter)
+                        func()
+
+
+def main():
+    bin_tree = BinarySearchTree()
+    dumbassinputhandler = ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway(bin_tree)
+    dumbassinputhandler.input_loop(bin_tree)
 
 if __name__ == "__main__":
-    search_tree = BinarySearchTree()
-    names = [
-        "krypto30",
-        "aqua41",
-        "martian55",
-        "cat40",
-        "lantern90",
-        "thebat39",
-        "flash44",
-        "rex40",
-        "wonder11",
-    ]
-
-    for name in names:
-        search_tree.add_node(name, len(name))
-
-    search_tree.delete_node("krypto30")
-
-    for name in names:
-        print(search_tree.get_value(name))
+    main()

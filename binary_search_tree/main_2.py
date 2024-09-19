@@ -211,7 +211,6 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
         for key, value in self.commands.items():
             print(f"{key}: {value}")
 
-
     def input_loop(self, bin_tree):
         while True:
             commands_input = input("> ").lower().split(" ")
@@ -224,11 +223,11 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
             elif len(commands_input) > 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        func_iter(commands_input[1:])
+                        print(func_iter(*commands_input[1:]))
             elif len(commands_input) == 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        func_iter()
+                        print(func_iter())
 
 
 def main():

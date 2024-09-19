@@ -4,6 +4,7 @@ class MorseNode():
         self.dash = None
         self.value = value
 
+
 class MorseTree():
     def __init__(self):
         self.root = MorseNode("root")
@@ -61,9 +62,6 @@ class MorseTree():
         return output
 
 
-
 morsetree = MorseTree()
-
-
 while True:
     print(morsetree.user_input_morse_decoder())

@@ -93,6 +93,13 @@ class BinarySearchTree:
         else:
             self.__root = BinaryNode(key, None, value)
 
+    def __add_subtree(self, start_node):
+        running_tree = start_node
+        while True:
+            self.add_node(running_tree.key, running_tree.value)
+            if not running_tree.right:
+                break
+
     def get_minimum_node(self, start_key=None) -> BinaryNode:
         if not start_key:
             start_key = self.__root
@@ -103,36 +110,58 @@ class BinarySearchTree:
             else:
                 return running_node
 
+    def set_val(self, obj0, subobj0: str, value, subsubobj0: str=None):# IMPLEMENT subsubobj = left
+        if subobj0 == "left" and obj0.left:
+            if subsubobj0 == "parent_key":
+                obj0.left.parent_key = value
+            elif not subsubobj0:
+                obj0.left = value
+        elif subobj0 == "right" and obj0.right:
+            if subsubobj0 == "parent_key":
+                obj0.right.parent_key = value
+            elif not subsubobj0:
+                obj0.right = value
+        else:
+            raise NodeNotFoundException()
+
     def delete_node(self, key: str, start_node=None) -> None:
         node = self.get_node(key, start_node)
         if node[1]:
             node = node[0]
             if node.key == self.__root.key:
-                raise NotImplementedError
+                self.__root = node
+                self.__root.parent_key = None
             else:
-                parent = self.get_node(node.parent_key)[0]
-            if node.key < parent.key:
+                old_parent = self.get_node(node.parent_key)[0]
+                if node.key < old_parent.key:
+                    pathway = "left"
+                elif node.key > old_parent.key:
+                    pathway = "right"
                 if not (node.left or node.right):
-                    parent.left = None
+                    self.set_val(old_parent, pathway, None)
                 elif node.left and not node.right:
-                    parent.left = node.left
+                    self.set_val(old_parent, pathway, node.left)
+                    self.set_val(old_parent, pathway, old_parent.key, "parent_key")
                 elif not node.left and node.right:
-                    parent.left = node.right
+                    self.set_val(old_parent, pathway, node.right)
+                    self.set_val(old_parent, pathway, old_parent.key, "parent_key")
                 else:
-                    parent.left = self.get_minimum_node(node)
-                    self.delete_node(parent.left.key, parent.right.left)
-            if node.key > parent.key:
-                if not (node.left or node.right):
-                    parent.right = None
-                elif node.left and not node.right:
-                    parent.right = node.left
-                elif not node.left and node.right:
-                    parent.right = node.right
-                else:
-                    x = self.get_minimum_node(node)
-                    parent.right = x
-                    parent.right.parent_key = parent.key
-                    self.delete_node(parent.right.key, parent.right.left)
+                    self.set_val(old_parent, pathway, self.get_minimum_node(node.right))
+                    self.set_val(old_parent, pathway, old_parent.key, "parent_key")
+                    if pathway == "left":
+                        self.delete_node(old_parent.left.key, old_parent.left.right)
+                    else:
+                        self.delete_node(old_parent.right.key, old_parent.right.right)
+                    self.set_val(old_parent, pathway, node.left, "left")
+                    if pathway == "left":
+                        if old_parent.left.right:
+                            old_min_right_subtree = old_parent.left.right
+                        old_parent.left.right = node.right
+                    else:
+                        if old_parent.right.right:
+                            old_min_right_subtree = old_parent.right.right
+                        old_parent.right.right = node.right
+                    self.__add_subtree(old_min_right_subtree.right)
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 

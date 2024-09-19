@@ -110,15 +110,19 @@ class BinarySearchTree:
             else:
                 return running_node
 
-    def set_val(self, obj0, subobj0: str, value, subsubobj0: str=None):# IMPLEMENT subsubobj = left
+    def set_val(self, obj0, subobj0: str, value, subsubobj0: str=None):
         if subobj0 == "left" and obj0.left:
             if subsubobj0 == "parent_key":
                 obj0.left.parent_key = value
+            elif subsubobj0 == "left":
+                obj0.left.left = value
             elif not subsubobj0:
                 obj0.left = value
         elif subobj0 == "right" and obj0.right:
             if subsubobj0 == "parent_key":
                 obj0.right.parent_key = value
+            elif subsubobj0 == "left":
+                obj0.right.left = value
             elif not subsubobj0:
                 obj0.right = value
         else:
@@ -145,14 +149,16 @@ class BinarySearchTree:
                 elif not node.left and node.right:
                     self.set_val(old_parent, pathway, node.right)
                     self.set_val(old_parent, pathway, old_parent.key, "parent_key")
-                else:
+                else:  # not node.left and not node.right
                     self.set_val(old_parent, pathway, self.get_minimum_node(node.right))
-                    self.set_val(old_parent, pathway, old_parent.key, "parent_key")
                     if pathway == "left":
-                        self.delete_node(old_parent.left.key, old_parent.left.right)
+                        old_parent_of_minimum = self.get_node(old_parent.left.parent_key)
                     else:
-                        self.delete_node(old_parent.right.key, old_parent.right.right)
+                        old_parent_of_minimum = self.get_node(old_parent.right.parent_key)
+                    old_parent_of_minimum[0].left = None
+                    self.set_val(old_parent, pathway, old_parent.key, "parent_key")
                     self.set_val(old_parent, pathway, node.left, "left")
+                    old_min_right_subtree = None
                     if pathway == "left":
                         if old_parent.left.right:
                             old_min_right_subtree = old_parent.left.right
@@ -161,7 +167,8 @@ class BinarySearchTree:
                         if old_parent.right.right:
                             old_min_right_subtree = old_parent.right.right
                         old_parent.right.right = node.right
-                    self.__add_subtree(old_min_right_subtree.right)
+                    if old_min_right_subtree:
+                        self.__add_subtree(old_min_right_subtree.right)
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
@@ -183,7 +190,7 @@ if __name__ == "__main__":
     for name in names:
         search_tree.add_node(name, len(name))
 
-    search_tree.delete_node("martian55")
+    search_tree.delete_node("thebat39")
 
     for name in names:
         print(search_tree.get_value(name))

@@ -17,6 +17,8 @@ class DuplicateKeyException(Exception):
 
 
 class BinaryNode:
+    """Dataclass, instances of which are
+    BinaryNodes, that can be used in a Binary Tree."""
     def __init__(self, key: str, parent_key: str, value=None):
         self.key = key
         self.parent_key = parent_key
@@ -26,6 +28,8 @@ class BinaryNode:
 
 
 class BinarySearchTree:
+    """A Binary Search tree, with methods
+    to operate on."""
 
     def __init__(self):
         self.__root = None
@@ -60,6 +64,8 @@ class BinarySearchTree:
         raise EmptyTreeException
 
     def __get_node_inner(self, key: str, position) -> BinaryNode:
+        """Inner method for the get_node() method.
+        Recursivly searches for a Node."""
         if key < position.key:
             if position.left:
                 if key == position.left.key:
@@ -80,6 +86,8 @@ class BinarySearchTree:
         raise NodeNotFoundException(position)
 
     def add_node(self, key: str, value=None) -> None:
+        """Creates a BinaryNode with the given
+        values and inserts it into the BinarySearchTree."""
         if self.__root:
             node = self.get_node(key)
             if node[1]:
@@ -94,6 +102,9 @@ class BinarySearchTree:
             self.__root = BinaryNode(key, None, value)
 
     def __add_subtree(self, start_node):
+        """Adds all Nodes of a subtree to
+        the main tree.
+        Used by the delete_node() method."""
         running_tree = start_node
         while True:
             self.add_node(running_tree.key, running_tree.value)
@@ -101,6 +112,10 @@ class BinarySearchTree:
                 break
 
     def get_minimum_node(self, start_key=None) -> BinaryNode:
+        """Returns the Node woth the smallest value of the
+        Subtree of a given Node, of no Node is passed, it
+        starts a the root node.
+        Used by the delete_node() method."""
         if not start_key:
             start_key = self.__root
         running_node = start_key
@@ -110,7 +125,26 @@ class BinarySearchTree:
             else:
                 return running_node
 
+    def get_maximum_node(self, start_key=None) -> BinaryNode:
+        """Returns the Node woth the biggest value of the
+        Subtree of a given Node, of no Node is passed, it
+        starts a the root Node.
+        Important for my teacher."""
+        if not start_key:
+            start_key = self.__root
+        running_node = start_key
+        while True:
+            if running_node.right:
+                running_node = running_node.right
+            else:
+                return running_node
+
     def set_val(self, obj0, subobj0: str, value, subsubobj0: str = None):
+        """Sets the value of the subobject subobj0 of the object obj0
+        to the value value, if subsubobj0 is passed it sets the value
+        of the subobject of the subobject of obj0. This only works, if
+        subsubobj0 is 'left', because other cases are not needed.
+        This method is only used by the delete_node() method."""
         if subobj0 == "left" and obj0.left:
             if subsubobj0 == "parent_key":
                 obj0.left.parent_key = value
@@ -129,6 +163,9 @@ class BinarySearchTree:
             raise NodeNotFoundException()
 
     def delete_node(self, key: str, start_node=None) -> None:
+        """Deletes the Node with the given key in the subtree
+        of the given start_node, if no start_node is passed,
+        it starts at the root Node."""
         node = self.get_node(key, start_node)
         if node[1]:  # If the Node is in the Tree
             node = node[
@@ -198,6 +235,7 @@ class BinarySearchTree:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
 class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
+    """Class which contains all user input related stuff."""
 
     def __init__(self, bin_tree):
         self.commands = {
@@ -208,10 +246,13 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
         }
 
     def help(self):
+        """Prints all available commands to the terminal."""
         for key, value in self.commands.items():
             print(f"{key}: {value}")
 
     def input_loop(self, bin_tree):
+        """Takes user input and calls the appropriate
+        methods with the given arguments."""
         while True:
             commands_input = input("> ").lower().split(" ")
             if commands_input == [""]:
@@ -231,6 +272,9 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
 
 
 def main():
+    """Main method, initializes
+    an instance of BinarySearchTree
+    and one of the Input Handler."""
     bin_tree = BinarySearchTree()
     dumbassinputhandler = ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway(bin_tree)
     dumbassinputhandler.input_loop(bin_tree)

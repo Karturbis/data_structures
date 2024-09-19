@@ -130,8 +130,8 @@ class BinarySearchTree:
 
     def delete_node(self, key: str, start_node=None) -> None:
         node = self.get_node(key, start_node)
-        if node[1]:
-            node = node[0]
+        if node[1]:  # If the Node is in the Tree
+            node = node[0]  # set node to the Node object, which is in [0] of the node tuple
             if node.key == self.__root.key:
                 self.__root = node
                 self.__root.parent_key = None
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     for name in names:
         search_tree.add_node(name, len(name))
 
-    search_tree.delete_node("thebat39")
+    search_tree.delete_node("krypto30")
 
     for name in names:
         print(search_tree.get_value(name))

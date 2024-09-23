@@ -1,5 +1,6 @@
 """Simple script to plot Graphs from
 Files in the .ajzl format"""
+
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -30,7 +31,9 @@ for edge in edges:
 pos = nx.spring_layout(G)
 edges = G.edges(data=True)
 
-nx.draw(G, pos, with_labels=True, node_size=1337, node_color='aquamarine')
-nx.draw_networkx_edge_labels(G, pos, edge_labels={(u, v): d['weight'] for u, v, d in edges})
+nx.draw(G, pos, with_labels=True, node_size=1337, node_color="aquamarine")
+nx.draw_networkx_edge_labels(
+    G, pos, edge_labels={(u, v): d["weight"] for u, v, d in edges}
+)
 
 plt.show()

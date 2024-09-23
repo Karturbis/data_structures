@@ -1,3 +1,7 @@
+"""For most recent Sourcecode visit:
+https://github.com/Karturbis/data_structures/tree/main/binary_search_tree
+"""
+
 class EmptyTreeException(Exception):
     """This Excepiotn is thrown, when
     the given tree is empty, but the
@@ -234,21 +238,22 @@ class BinarySearchTree:
         else:
             raise NodeNotFoundException("Node could not be removed from tree.")
 
+
 class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
     """Class which contains all user input related stuff."""
 
     def __init__(self, bin_tree):
         self.commands = {
-            "add": bin_tree.add_node,
-            "delete": bin_tree.delete_node,
-            "find": bin_tree.get_value,
-            "help": self.help
+            "add": [bin_tree.add_node, "add_node"],
+            "delete": [bin_tree.delete_node, "delete_node"],
+            "find": [bin_tree.get_value, "get_value"],
+            "help": [self.help, "help"]
         }
 
     def help(self):
         """Prints all available commands to the terminal."""
         for key, value in self.commands.items():
-            print(f"{key}: {value}")
+            print(f"{key}: {value[1]}")
 
     def input_loop(self, bin_tree):
         """Takes user input and calls the appropriate
@@ -264,11 +269,11 @@ class ThisClassIsNeccessaryAndIDoNotKnowWhyButICodeItAnyway:
             elif len(commands_input) > 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        print(func_iter(*commands_input[1:]))
+                        print(func_iter[0](*commands_input[1:]))
             elif len(commands_input) == 1:
                 for key, func_iter in self.commands.items():
                     if key.startswith(commands_input[0]):
-                        print(func_iter())
+                        print(func_iter[0]())
 
 
 def main():

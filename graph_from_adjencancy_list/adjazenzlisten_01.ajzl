@@ -2,8 +2,9 @@
 # First column are knots, after the
 # colon are all knots a is connected
 # to, with the corresponding weight.
-A:B(2),C(4)
-B:A(2),C(5),D(3)
-C:A(4),B(5),E(7)
-D:B(3),E(1)
-E:C(7),D(1)
+L:S(5),N(6),H(12),P(5),A(10)
+A:B(6),S(9),P(6)
+N:S(9),F(18),H(15)
+S:F(12),B(14)
+F:B(5)
+H:P(6)

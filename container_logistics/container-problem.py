@@ -1,6 +1,5 @@
 import networkx as nx
 
-
 def breadth_first_search(in_graph, node):
     queue: list = [node]
     node_attr = {n: {"visited": False, "parent": None, "depth": 0} for n in in_graph.nodes}
@@ -33,7 +32,7 @@ def depth_first_search(in_graph, node):
             na["parent"] = current_node
             na["depth"] = node_attr[current_node]["depth"] +1
             na["discovery_time"] = time
-        
+    
         return node_attr
 
 if __name__ == "__main__":

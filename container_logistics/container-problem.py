@@ -1,6 +1,7 @@
 import networkx as nx
 
 def strip_unvisited(graph_dict: dict):
+    """return the Graph, without all unvisited nodes"""
     return {n: graph_dict[n] for n in graph_dict if graph_dict[n]["visited"]}
 
 def breadth_first_search(in_graph, node, include_unvisited=False):

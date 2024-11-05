@@ -9,7 +9,8 @@ def strip_unvisited(graph_dict: dict):
 
 
 def breadth_first_search(in_graph, node, include_unvisited=False):
-    """Returns the path to @node in @in_graph as a dict"""
+    """Returns the path to every node from @node in @in_graph as a dict
+    using breadth first search"""
     queue: list = [node]
     node_attr = {
         n: {"visited": False, "parent": None, "depth": 0} for n in in_graph.nodes
@@ -32,6 +33,8 @@ def breadth_first_search(in_graph, node, include_unvisited=False):
 
 
 def depth_first_search(in_graph, node, include_unvisited=False):
+    """Returns the path to every node from @node in @in_graph as a dict
+    using depth first search"""
     stack = [node]
     node_attr = {
         n: {

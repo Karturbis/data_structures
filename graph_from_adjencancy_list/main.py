@@ -4,7 +4,7 @@ Files in the .ajzl format"""
 import matplotlib.pyplot as plt
 import networkx as nx
 
-adjacancy_list_file: str = "graph_from_adjencancy_list/adjazenzlisten_01.ajzl"
+adjacancy_list_file: str = "data_structures/graph_from_adjencancy_list/adjazenzlisten_01.ajzl"
 
 with open(adjacancy_list_file, encoding="utf-8") as reader:
     adjacancy_lines_list = reader.readlines()
